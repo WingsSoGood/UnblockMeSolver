@@ -13,7 +13,7 @@
 using namespace std;
 
 // RGB data of the image
-static unsigned char g_image[480][320][3];
+static unsigned char g_image[693][320][3];
 
 // The board is SIZE x SIZE tiles
 #define SIZE 6
@@ -348,6 +348,7 @@ void SolveBoard(list<Block>& blocks)
         // Find prisoner block...
         auto it=find_if(blocks.begin(), blocks.end(),
             [](Block& x) { return x._kind == prisoner; });
+        // printf("it: %d, blocks.end(), %d...\n",it, blocks.end());
         assert(it != blocks.end()); // The prisoner is always there!
 
         // Can he escape? Check to his right!
@@ -484,18 +485,24 @@ void DetectTileBodies()
     cout << "Detecting tile bodies...\n";
     for(int y=0; y<SIZE; y++) {
         for(int x=0; x<SIZE; x++) {
-            unsigned line   = 145 + y*50;
+            unsigned line   = 252 + y*50;
             unsigned column =  34 + x*50;
             // The red channel, surprisingly, was not necessary
             //unsigned char r = g_image[line][column][0];
             unsigned char g = g_image[line][column][1];
             unsigned char b = g_image[line][column][2];
-            if (b > 30)
+            if (b > 29){
                 g_tiles[y][x] = empty;
-            else if (g < 30)
+                // printf("x,y:%d,%d line,column:%d,%d g,b:%d,%d empty...\n", x, y, line, column, g,b);
+            }
+            else if (g < 30){
                 g_tiles[y][x] = prisoner;
-            else
+                // printf("x,y:%d,%d line,column:%d,%d g,b:%d,%d prisoner...\n", x, y, line, column, g,b);
+            }
+            else {
                 g_tiles[y][x] = block;
+                // printf("x,y:%d,%d line,column:%d,%d g,b:%d,%d block...\n", x, y, line, column, g,b);
+            }
         }
     }
 }
@@ -505,7 +512,7 @@ void DetectTopAndBottomTileBorders()
     cout << "Detecting top and bottom tile borders...\n\n";
     for(int y=0; y<SIZE; y++) {
         for(int x=0; x<SIZE; x++) {
-            unsigned line    = 145 + y*50;
+            unsigned line    = 252 + y*50;
             unsigned column  =  34 + x*50;
             unsigned ytop    = line - 23;
             unsigned ybottom = line + 23;
@@ -513,16 +520,34 @@ void DetectTopAndBottomTileBorders()
             unsigned char r = g_image[ytop][column][0];
             unsigned char g = g_image[ytop][column][1];
             //unsigned char b = g_image[ytop][column][2];
-            if      (r > 200 && g > 160) g_borders[y*2][x] = white;
-            else if (r < 40 && g < 30)   g_borders[y*2][x] = black;
-            else                         g_borders[y*2][x] = notBorder;
+            if (r > 200 && g > 160) {
+                g_borders[y*2][x] = white;
+                // printf("white boarder- line,ytop: %d,%d, rg:%d,%d...\n", line, ytop, r, g);
+            }
+            else if (r < 40 && g < 30) {
+                g_borders[y*2][x] = black;
+                // printf("black border-line,ytop: %d,%d, rg:%d,%d...\n", line, ytop, r, g);
+            }
+            else {
+                g_borders[y*2][x] = notBorder;
+                // printf("not border-line,ytop: %d,%d, rg:%d,%d...\n", line, ytop, r, g);
+            }
 
             r = g_image[ybottom][column][0];
             g = g_image[ybottom][column][1];
             //b = g_image[ybottom][column][2];
-            if      (r > 200 && g > 160) g_borders[y*2+1][x] = white;
-            else if (r < 40 && g < 30)   g_borders[y*2+1][x] = black;
-            else                         g_borders[y*2+1][x] = notBorder;
+            if      (r > 200 && g > 160) {
+                g_borders[y*2+1][x] = white;
+                // printf("white boarder- line,ytop: %d,%d, rg:%d,%d...\n", line, ybottom, r, g);
+            }
+            else if (r < 40 && g < 30) {
+                g_borders[y*2+1][x] = black;
+                // printf("black boarder- line,ytop: %d,%d, rg:%d,%d...\n", line, ybottom, r, g);
+            }
+            else {
+                g_borders[y*2+1][x] = notBorder;
+                // printf("not boarder- line,ytop: %d,%d, rg:%d,%d...\n", line, ybottom, r, g);
+            }
         }
     }
 }
@@ -539,9 +564,9 @@ int main()
     }
     rgbDataFileStream.read(
         reinterpret_cast<char*>(&g_image[0][0][0]),
-        480*320*3);
+        693*320*3);
     if (rgbDataFileStream.fail() || rgbDataFileStream.eof()) {
-        cerr << "Failed to read 480x320x3 bytes from 'data.rgb'...\n\n";
+        cerr << "Failed to read 693x320x3 bytes from 'data.rgb'...\n\n";
         exit(1);
     }
     rgbDataFileStream.close();
