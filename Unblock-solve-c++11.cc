@@ -68,6 +68,26 @@ list<Block> ScanBodiesAndBordersAndEmitStartingBlockPositions()
 
     // Initially, we don't have a clue what each tile has
     memset(isTileKnown, false, sizeof(isTileKnown));
+
+    int i,j;
+    printf("Tile overview \n");
+    for (i = 0; i < 5; i++) {
+        for (j = 0; j < 5; j++) {
+            printf("%d ", g_tiles[i][j]);
+        }
+        printf("\n");
+    }
+    printf("\n");
+
+    printf("Boarder overview \n");
+    for (i = 0; i < 10; i++) {
+        for (j = 0; j < 10; j++) {
+            printf("%d ", g_borders[i][j]);
+        }
+        printf("\n");
+    }
+    printf("\n");
+
     while (true) {
         for(int y=0; y<SIZE; y++) {
             for(int x=0; x<SIZE; x++) {
@@ -520,7 +540,7 @@ void DetectTopAndBottomTileBorders()
             unsigned char r = g_image[ytop][column][0];
             unsigned char g = g_image[ytop][column][1];
             //unsigned char b = g_image[ytop][column][2];
-            if (r > 200 && g > 160) {
+            if (r > 200 && g > 155) {
                 g_borders[y*2][x] = white;
                 // printf("white boarder- line,ytop: %d,%d, rg:%d,%d...\n", line, ytop, r, g);
             }
